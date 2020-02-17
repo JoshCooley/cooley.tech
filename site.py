@@ -2,12 +2,12 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from subprocess import run as shell_out
 from markdown import markdown
 
-PORT = 8080
-GIT_URL = shell_out(["git","config","--get","remote.origin.url"], capture_output=True, encoding='utf-8').stdout.strip()
-GIT_REPO = shell_out(["basename",GIT_URL,".git"], capture_output=True, encoding='utf-8').stdout.strip()
-GIT_SHA = shell_out(["git","rev-parse","HEAD"], capture_output=True, encoding='utf-8').stdout.strip()
-README = markdown(open('README.md').read())
-HTML = """
+port = 8080
+git_url = shell_out(["git","config","--get","remote.origin.url"], capture_output=True, encoding='utf-8').stdout.strip()
+git_repo = shell_out(["basename",git_url,".git"], capture_output=True, encoding='utf-8').stdout.strip()
+git_sha = shell_out(["git","rev-parse","HEAD"], capture_output=True, encoding='utf-8').stdout.strip()
+readme = markdown(open('README.md').read())
+html = """
 <!doctype html>
 <html lang="en">
   <head>
@@ -22,16 +22,16 @@ HTML = """
     </p>
   </body>
 </html>
-""".format(GIT_REPO, GIT_SHA, README)
+""".format(git_repo, git_sha, readme)
 
-class Handler(BaseHTTPRequestHandler):
+class MyHandler(BaseHTTPRequestHandler):
     def do_GET(h):
         h.send_response(200)
         h.end_headers()
-        h.wfile.write(HTML.encode())
+        h.wfile.write(html.encode())
 
-def run_server(server_class=HTTPServer, handler_class=Handler):
-    server_address = ('', PORT)
+def run_server(server_class=HTTPServer, handler_class=MyHandler):
+    server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     httpd.serve_forever()
 
