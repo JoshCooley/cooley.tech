@@ -1,5 +1,5 @@
 resource "aws_iam_role" "cooley_tech" {
-  name = "cooley.tech"
+  name = "cooley.tech_build"
 
   assume_role_policy = <<EOF
 {
