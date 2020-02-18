@@ -1,12 +1,18 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
-from subprocess import run as shell_out
-from markdown import markdown
+import markdown
+import subprocess
+from typing import List
+
+def shell_out(command: List[str]) -> str:
+    return subprocess.run(
+        command, capture_output=True, encoding='utf-8'
+    ).stdout.strip()
 
 port = 8080
-git_url = shell_out(["git","config","--get","remote.origin.url"], capture_output=True, encoding='utf-8').stdout.strip()
-git_repo = shell_out(["basename",git_url,".git"], capture_output=True, encoding='utf-8').stdout.strip()
-git_sha = shell_out(["git","rev-parse","HEAD"], capture_output=True, encoding='utf-8').stdout.strip()
-readme = markdown(open('README.md').read())
+git_url = shell_out(["git","config", "--get", "remote.origin.url"])
+git_repo = shell_out(["basename", git_url, ".git"])
+git_sha = shell_out(["git", "rev-parse", "HEAD"])
+readme = markdown.markdown(open('README.md').read())
 html = """
 <!doctype html>
 <html lang="en">
