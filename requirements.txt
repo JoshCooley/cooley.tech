@@ -1,2 +1,0 @@
-# cooley.tech
-markdown==3.2.1
